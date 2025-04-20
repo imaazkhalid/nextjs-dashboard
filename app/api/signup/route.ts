@@ -42,7 +42,10 @@ export async function POST(req: Request) {
 
         await sql`INSERT INTO users (name, email, password) VALUES (${name}, ${email}, ${hashedPassword})`;
 
-        return NextResponse.json({ message: 'User registered successfully' });
+        return NextResponse.json(
+            { message: 'User registered successfully', redirectTo: '/login' },
+            { status: 201 }
+        );
     } catch (error) {
         console.error('Error during signup:', error);
         return NextResponse.json(

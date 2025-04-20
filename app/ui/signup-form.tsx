@@ -2,9 +2,17 @@
 
 import { useState } from 'react';
 import { lusitana } from '@/app/ui/fonts';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/app/ui/button';
+import Link from 'next/link';
+import {
+  AtSymbolIcon,
+  KeyIcon,
+  ExclamationCircleIcon,
+} from '@heroicons/react/24/outline';
 
 export default function SignupForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,7 +20,7 @@ export default function SignupForm() {
     confirmPassword: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -22,7 +30,7 @@ export default function SignupForm() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setErrorMessage('');
-    setSuccessMessage('');
+    setIsSubmitting(true);
 
     try {
       const response = await fetch('/api/signup', {
@@ -34,12 +42,14 @@ export default function SignupForm() {
       const data = await response.json();
       if (!response.ok) {
         setErrorMessage(data.error || 'Signup failed');
+        setIsSubmitting(false);
       } else {
-        setSuccessMessage(data.message || 'Signup successful');
+        router.push(data.redirectTo || '/login');
       }
     } catch (error) {
       console.error('Database Error:', error);
       setErrorMessage('An error occurred. Please try again.');
+      setIsSubmitting(false);
     }
   };
 
@@ -53,7 +63,7 @@ export default function SignupForm() {
               Name
             </label>
             <input
-              className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm"
+              className="block w-full rounded-md border-gray-200 py-[9px] px-3 text-sm"
               id="name"
               type="text"
               name="name"
@@ -64,11 +74,11 @@ export default function SignupForm() {
             />
           </div>
           <div className="mt-4">
-            <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="email">
+            <label className="mb-3 block text-xs font-medium text-gray-900" htmlFor="email">
               Email
             </label>
             <input
-              className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm"
+              className="block w-full rounded-md border-gray-200 py-[9px] px-3 text-sm"
               id="email"
               type="email"
               name="email"
@@ -79,11 +89,11 @@ export default function SignupForm() {
             />
           </div>
           <div className="mt-4">
-            <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="password">
+            <label className="mb-3 block text-xs font-medium text-gray-900" htmlFor="password">
               Password
             </label>
             <input
-              className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm"
+              className="block w-full rounded-md border-gray-200 py-[9px] px-3 text-sm"
               id="password"
               type="password"
               name="password"
@@ -95,14 +105,11 @@ export default function SignupForm() {
             />
           </div>
           <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="confirmPassword"
-            >
+            <label className="mb-3 block text-xs font-medium text-gray-900" htmlFor="confirmPassword">
               Confirm Password
             </label>
             <input
-              className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm"
+              className="block w-full rounded-md border-gray-200 py-[9px] px-3 text-sm"
               id="confirmPassword"
               type="password"
               name="confirmPassword"
@@ -114,9 +121,15 @@ export default function SignupForm() {
             />
           </div>
         </div>
-        <Button className="mt-4 w-full">Signup</Button>
-        {errorMessage && <p className="mt-4 text-sm text-red-500">{errorMessage}</p>}
-        {successMessage && <p className="mt-4 text-sm text-green-500">{successMessage}</p>}
+        <Button className="mt-4 w-full" disabled={isSubmitting}>
+          {isSubmitting ? 'Signing up...' : 'Sign up'}
+        </Button>
+        <div className="mt-2 text-sm text-red-500">{errorMessage}</div>
+        <div className="flex justify-between items-center mt-4">
+          <p className="text-sm">
+            Already have an account? <Link href="/login" className="text-blue-600">Login here</Link>
+          </p>
+        </div>
       </div>
     </form>
   );
