@@ -95,6 +95,10 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
 }
 
 export async function deleteInvoice(id: string) {
+    if (!id) {
+        return { message: 'Error: Invalid Invoice ID provided for deletion.' };
+    }
+
     try {
         await sql`DELETE FROM invoices WHERE id = ${id}`;
     } catch (error) {
