@@ -121,7 +121,16 @@ export async function authenticate(
         await signIn('credentials', formData);
     } catch (error) {
         if (error instanceof AuthError) {
-            switch (error.type) {
+
+            // --- WORKAROUND ---
+            // Assert that the error object has a 'type' property.
+            // We add 'type?: string' to acknowledge it might exist according
+            // to runtime behavior, even if the base type definition isn't fully picked up.
+            const knownError = error as AuthError & { type?: string };
+
+            // Now use knownError.type
+            switch (knownError.type) {
+            // --- END WORKAROUND ---
                 case 'CredentialsSignin':
                     return 'Invalid credentials.';
                 default:
