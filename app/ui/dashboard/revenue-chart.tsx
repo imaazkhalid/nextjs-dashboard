@@ -13,11 +13,20 @@ export default async function RevenueChart() {
   const revenue = await fetchRevenue();
 
   const chartHeight = 350;
-  // NOTE: Uncomment this code in Chapter 7
 
-  const { yAxisLabels, topLabel } = generateYAxis(revenue);
+  const monthOrder = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
 
-  if (!revenue || revenue.length === 0) {
+  // Sort revenue data by month order
+  const sortedRevenue = revenue.sort((a, b) => {
+    return monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month);
+  });
+
+  const { yAxisLabels, topLabel } = generateYAxis(sortedRevenue);
+
+  if (!sortedRevenue || sortedRevenue.length === 0) {
     return <p className="mt-4 text-gray-400">No data available.</p>;
   }
 
@@ -39,7 +48,7 @@ export default async function RevenueChart() {
             ))}
           </div>
 
-          {revenue.map((month) => (
+          {sortedRevenue.map((month) => (
             <div key={month.month} className="flex flex-col items-center gap-2">
               <div
                 className="w-full rounded-md bg-blue-300"
