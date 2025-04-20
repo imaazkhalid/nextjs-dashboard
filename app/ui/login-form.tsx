@@ -75,7 +75,7 @@ export default function LoginForm() {
         </Button>
         <div className="flex justify-between items-center mt-4">
           <p className="text-sm">
-            Don't have an account? <Link href="/signup" className="text-blue-600">Signup here</Link>
+            Don&#39;t have an account? <Link href="/signup" className="text-blue-600">Signup here</Link>
           </p>
         </div>
         <div

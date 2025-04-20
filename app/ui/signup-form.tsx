@@ -38,6 +38,7 @@ export default function SignupForm() {
         setSuccessMessage(data.message || 'Signup successful');
       }
     } catch (error) {
+      console.error('Database Error:', error);
       setErrorMessage('An error occurred. Please try again.');
     }
   };
