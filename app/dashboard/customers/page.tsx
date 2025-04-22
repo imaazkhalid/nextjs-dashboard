@@ -14,7 +14,6 @@ export default async function Page(
 
   return (
     <div className="w-full">
-      <h1 className="text-2xl">Customers</h1>
       <CustomersTable customers={customers} />
     </div>
   );
